@@ -19,14 +19,26 @@ abstract class HttpClient {
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
+class MakeSUT {
+  late AuthenticationHandler sut;
+  final HttpClientSpy httpClient;
+  final String url;
+
+  MakeSUT(this.httpClient, this.url) {
+    this.sut = AuthenticationHandler(httpClient: httpClient, url: url);
+  }
+}
+
 void main() {
+  late MakeSUT make;
+
+  setUp(() {
+    make = MakeSUT(HttpClientSpy(), faker.internet.httpUrl());
+  });
+
   test("Should call HttpClient with correct values", () async {
-    final httpClient = HttpClientSpy();
-    final url = faker.internet.httpUrl();
-    final sut = AuthenticationHandler(httpClient: httpClient, url: url);
+    await make.sut.auth();
 
-    await sut.auth();
-
-    verify(httpClient.request(url: url, method: "post"));
+    verify(make.httpClient.request(url: make.url, method: "post"));
   });
 }
