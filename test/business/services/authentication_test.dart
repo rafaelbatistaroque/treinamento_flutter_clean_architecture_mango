@@ -18,7 +18,14 @@ class MakeSUT {
 
   MakeSUT(this.httpClient, this.url, this.params) {
     this.sut = AuthenticationHandler(httpClient: httpClient, url: url);
+    mockHttpData(mockValidData());
   }
+
+  Map mockValidData() => {"accessToken": faker.guid.guid(), "name": faker.person.name()};
+  void mockHttpData(Map data) => mockRequest().thenAnswer((_) async => data);
+  void mockHttpError(HttpError error) => mockRequest().thenThrow(error);
+  PostExpectation mockRequest() =>
+      when(httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")));
 }
 
 void main() {
@@ -30,9 +37,6 @@ void main() {
   });
 
   test("Should call HttpClient with correct values", () async {
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenAnswer((_) async => {"accessToken": faker.guid.guid(), "name": faker.person.name()});
-
     await make.sut.auth(make.params);
 
     verify(make.httpClient
@@ -40,8 +44,7 @@ void main() {
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 400", () async {
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenThrow(HttpError.badRequest);
+    make.mockHttpError(HttpError.badRequest);
 
     final future = make.sut.auth(make.params);
 
@@ -49,8 +52,7 @@ void main() {
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 404", () async {
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenThrow(HttpError.notFound);
+    make.mockHttpError(HttpError.notFound);
 
     final future = make.sut.auth(make.params);
 
@@ -58,8 +60,7 @@ void main() {
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 500", () async {
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenThrow(HttpError.serverError);
+    make.mockHttpError(HttpError.serverError);
 
     final future = make.sut.auth(make.params);
 
@@ -67,8 +68,7 @@ void main() {
   });
 
   test("Should throw InvalidCredencialsError if HttpClient returns status code 401", () async {
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenThrow(HttpError.unauthorized);
+    make.mockHttpError(HttpError.unauthorized);
 
     final future = make.sut.auth(make.params);
 
@@ -76,18 +76,16 @@ void main() {
   });
 
   test("Should return an Account if HttpClient returns status code 200", () async {
-    final String accessToken = faker.guid.guid();
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenAnswer((_) async => {"accessToken": accessToken, "name": faker.person.name()});
+    final validData = make.mockValidData();
+    make.mockHttpData(validData);
 
     final account = await make.sut.auth(make.params);
 
-    expect(account.token, accessToken);
+    expect(account.token, validData["accessToken"]);
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 200 with invalid data", () async {
-    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
-        .thenAnswer((_) async => {"invalid_key": "invalid_value"});
+    make.mockHttpData({"invalid_key": "invalid_value"});
 
     final future = make.sut.auth(make.params);
 
