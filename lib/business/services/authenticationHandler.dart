@@ -5,7 +5,7 @@ import '../models/account_model.dart';
 import '../contract/contract.dart';
 import '../helpers/helpers.dart';
 
-class AuthenticationHandler {
+class AuthenticationHandler implements Authentication {
   final HttpClient httpClient;
   final String url;
 
