@@ -84,4 +84,13 @@ void main() {
 
     expect(account.token, accessToken);
   });
+
+  test("Should throw UnexpectedError if HttpClient returns status code 200 with invalid data", () async {
+    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
+        .thenAnswer((_) async => {"invalid_key": "invalid_value"});
+
+    final future = make.sut.auth(make.params);
+
+    expect(future, throwsA(DomainError.unexpected));
+  });
 }

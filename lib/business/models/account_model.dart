@@ -1,11 +1,16 @@
-import 'package:enquetes_flutter_mango/domain/entities/account_entity.dart';
+import '../helpers/helpers.dart';
+import '../../domain/entities/entities.dart';
 
 class AccountModel {
   final String accessToken;
 
   AccountModel(this.accessToken);
 
-  factory AccountModel.fromJson(Map? json) => AccountModel(json!["accessToken"]);
+  factory AccountModel.fromJson(Map? json) {
+    if (!json!.containsKey("accessToken")) throw HttpError.invalidData;
+
+    return AccountModel(json["accessToken"]);
+  }
 
   AccountEntity toEntity() => AccountEntity(accessToken);
 }
