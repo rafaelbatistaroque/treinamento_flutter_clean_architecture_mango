@@ -1,6 +1,7 @@
 import '../../domain/entities/entities.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/authentication.dart';
+import '../models/account_model.dart';
 import '../contract/contract.dart';
 import '../helpers/helpers.dart';
 
@@ -15,7 +16,7 @@ class AuthenticationHandler {
       final httpResponse =
           await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
 
-      return AccountEntity.fromJson(httpResponse);
+      return AccountModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
       throw error == HttpError.unauthorized ? DomainError.invalidCredencials : DomainError.unexpected;
     }
