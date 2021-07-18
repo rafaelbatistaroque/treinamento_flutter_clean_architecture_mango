@@ -62,4 +62,13 @@ void main() {
 
     expect(future, throwsA(DomainError.unexpected));
   });
+
+  test("Should throw InvalidCredencialsError if HttpClient returns status code 401", () async {
+    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
+        .thenThrow(HttpError.unauthorized);
+
+    final future = make.sut.auth(make.params);
+
+    expect(future, throwsA(DomainError.invalidCredencials));
+  });
 }
