@@ -1,3 +1,4 @@
+import '../../domain/entities/entities.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/authentication.dart';
 import '../contract/contract.dart';
@@ -9,9 +10,12 @@ class AuthenticationHandler {
 
   AuthenticationHandler({required this.httpClient, required this.url});
 
-  Future<void> auth(AuthenticationParams params) async {
+  Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
-      await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
+      final httpResponse =
+          await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
+
+      return AccountEntity.fromJson(httpResponse);
     } on HttpError catch (error) {
       throw error == HttpError.unauthorized ? DomainError.invalidCredencials : DomainError.unexpected;
     }
@@ -27,5 +31,5 @@ class AuthenticationHandlerParams {
   factory AuthenticationHandlerParams.criar(AuthenticationParams params) =>
       AuthenticationHandlerParams(email: params.email, password: params.secret);
 
-  Map<String, dynamic> toJson() => {"email": email, "password": password};
+  Map toJson() => {"email": email, "password": password};
 }

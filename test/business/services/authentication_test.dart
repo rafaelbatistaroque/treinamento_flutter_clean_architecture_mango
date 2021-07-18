@@ -30,6 +30,9 @@ void main() {
   });
 
   test("Should call HttpClient with correct values", () async {
+    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
+        .thenAnswer((_) async => {"accessToken": faker.guid.guid(), "name": faker.person.name()});
+
     await make.sut.auth(make.params);
 
     verify(make.httpClient
@@ -70,5 +73,15 @@ void main() {
     final future = make.sut.auth(make.params);
 
     expect(future, throwsA(DomainError.invalidCredencials));
+  });
+
+  test("Should return an Account if HttpClient returns status code 200", () async {
+    final String accessToken = faker.guid.guid();
+    when(make.httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")))
+        .thenAnswer((_) async => {"accessToken": accessToken, "name": faker.person.name()});
+
+    final account = await make.sut.auth(make.params);
+
+    expect(account.token, accessToken);
   });
 }
