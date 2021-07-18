@@ -1,5 +1,7 @@
+import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/authentication.dart';
 import '../contract/contract.dart';
+import '../helpers/helpers.dart';
 
 class AuthenticationHandler {
   final HttpClient httpClient;
@@ -8,7 +10,11 @@ class AuthenticationHandler {
   AuthenticationHandler({required this.httpClient, required this.url});
 
   Future<void> auth(AuthenticationParams params) async {
-    await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
+    try {
+      await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
+    } on HttpError {
+      throw DomainError.unexpected;
+    }
   }
 }
 
