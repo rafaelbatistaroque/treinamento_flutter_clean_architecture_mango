@@ -26,14 +26,11 @@ void main() {
   });
 
   test("Should call HttpClient with correct values", () async {
-    final params = AuthenticationParams(
-        email: faker.internet.email(), secret: faker.internet.password());
+    final params = AuthenticationParams(email: faker.internet.email(), secret: faker.internet.password());
 
     await make.sut.auth(params);
 
-    verify(make.httpClient.request(
-        url: make.url,
-        method: "post",
-        body: {"email": params.email, "password": params.secret}));
+    verify(make.httpClient
+        .request(url: make.url, method: "post", body: {"email": params.email, "password": params.secret}));
   });
 }
