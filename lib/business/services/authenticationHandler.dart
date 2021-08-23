@@ -13,8 +13,7 @@ class AuthenticationHandler implements Authentication {
 
   Future<AccountEntity> auth(AuthenticationParams params) async {
     try {
-      final httpResponse =
-          await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
+      final httpResponse = await httpClient.request(url: url, method: "post", body: AuthenticationHandlerParams.criar(params).toJson());
 
       return AccountModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
@@ -29,8 +28,7 @@ class AuthenticationHandlerParams {
 
   AuthenticationHandlerParams({required this.email, required this.password});
 
-  factory AuthenticationHandlerParams.criar(AuthenticationParams params) =>
-      AuthenticationHandlerParams(email: params.email, password: params.secret);
+  factory AuthenticationHandlerParams.criar(AuthenticationParams params) => AuthenticationHandlerParams(email: params.email, password: params.secret);
 
   Map toJson() => {"email": email, "password": password};
 }

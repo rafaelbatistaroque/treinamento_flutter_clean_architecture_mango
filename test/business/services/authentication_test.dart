@@ -1,5 +1,5 @@
 import 'package:faker/faker.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 import 'package:enquetes_flutter_mango/business/helpers/helpers.dart';
@@ -10,84 +10,76 @@ import 'package:enquetes_flutter_mango/business/services/services.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
-class MakeSUT {
+void main() {
   late AuthenticationHandler sut;
-  final HttpClientSpy httpClient;
-  final String url;
-  final AuthenticationParams params;
+  late AuthenticationParams params;
+  late HttpClientSpy httpClient;
+  late String url;
 
-  MakeSUT(this.httpClient, this.url, this.params) {
-    this.sut = AuthenticationHandler(httpClient: httpClient, url: url);
-    mockHttpData(mockValidData());
-  }
-
+  mockRequest() => when(() => httpClient.request(url: any(named: "url"), method: any(named: "method"), body: any(named: "body")));
   Map mockValidData() => {"accessToken": faker.guid.guid(), "name": faker.person.name()};
   void mockHttpData(Map data) => mockRequest().thenAnswer((_) async => data);
   void mockHttpError(HttpError error) => mockRequest().thenThrow(error);
-  PostExpectation mockRequest() =>
-      when(httpClient.request(url: anyNamed("url"), method: anyNamed("method"), body: anyNamed("body")));
-}
-
-void main() {
-  late MakeSUT make;
 
   setUp(() {
-    make = MakeSUT(HttpClientSpy(), faker.internet.httpUrl(),
-        AuthenticationParams(email: faker.internet.email(), secret: faker.internet.password()));
+    httpClient = HttpClientSpy();
+    url = faker.internet.httpUrl();
+    sut = AuthenticationHandler(httpClient: httpClient, url: url);
+    params = AuthenticationParams(email: faker.internet.email(), secret: faker.internet.password());
+    mockHttpData(mockValidData());
   });
 
   test("Should call HttpClient with correct values", () async {
-    await make.sut.auth(make.params);
+    await sut.auth(params);
 
-    verify(make.httpClient
-        .request(url: make.url, method: "post", body: {"email": make.params.email, "password": make.params.secret}));
+    verify(() => httpClient.request(url: url, method: "post", body: {"email": params.email, "password": params.secret}));
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 400", () async {
-    make.mockHttpError(HttpError.badRequest);
+    mockHttpError(HttpError.badRequest);
 
-    final future = make.sut.auth(make.params);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 404", () async {
-    make.mockHttpError(HttpError.notFound);
+    mockHttpError(HttpError.notFound);
 
-    final future = make.sut.auth(make.params);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 500", () async {
-    make.mockHttpError(HttpError.serverError);
+    mockHttpError(HttpError.serverError);
 
-    final future = make.sut.auth(make.params);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
 
   test("Should throw InvalidCredencialsError if HttpClient returns status code 401", () async {
-    make.mockHttpError(HttpError.unauthorized);
+    mockHttpError(HttpError.unauthorized);
 
-    final future = make.sut.auth(make.params);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.invalidCredencials));
   });
 
   test("Should return an Account if HttpClient returns status code 200", () async {
-    final validData = make.mockValidData();
-    make.mockHttpData(validData);
+    final validData = mockValidData();
+    mockHttpData(validData);
 
-    final account = await make.sut.auth(make.params);
+    final account = await sut.auth(params);
 
     expect(account.token, validData["accessToken"]);
   });
 
   test("Should throw UnexpectedError if HttpClient returns status code 200 with invalid data", () async {
-    make.mockHttpData({"invalid_key": "invalid_value"});
+    mockHttpData({"invalid_key": "invalid_value"});
 
-    final future = make.sut.auth(make.params);
+    final future = sut.auth(params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
