@@ -12,7 +12,9 @@ class HttpAdapter {
 
   Future<void> request({required String url, required String method, Map? body}) async {
     final headers = {"content-type": "application/json", "accept": "application/json"};
-    await client.post(Uri.parse(url), headers: headers, body: jsonEncode(body));
+    final jsonBody = body != null ? jsonEncode(body) : null;
+
+    await client.post(Uri.parse(url), headers: headers, body: jsonBody);
   }
 }
 
@@ -42,6 +44,14 @@ void main() {
             headers: {"content-type": "application/json", "accept": "application/json"},
             body: jsonEncode(body),
           )).called(1);
+    });
+
+    test("Should call post without body", () async {
+      when(() => client.post(any(), headers: any(named: "headers"))).thenAnswer((_) async => Response("", 200));
+
+      await sut.request(url: url, method: "post");
+
+      verify(() => client.post(any(), headers: any(named: "headers"))).called(1);
     });
   });
 }
