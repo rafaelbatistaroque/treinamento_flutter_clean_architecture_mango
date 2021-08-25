@@ -27,10 +27,12 @@ void main() {
     });
   });
   group("post", () {
-    mockRequest() => when(() => client.post(any(), headers: any(named: "headers"), body: any(named: "body")));
-    void mockResponse(int statusCode, {String body = '{"any_key": "any_value"}'}) {
-      mockRequest().thenAnswer((_) async => Response(body, statusCode));
-    }
+    When mockRequest() => when(() => client.post(any(), headers: any(named: "headers"), body: any(named: "body")));
+
+    void mockResponse(int statusCode, {String body = '{"any_key": "any_value"}'}) =>
+        mockRequest().thenAnswer((_) async => Response(body, statusCode));
+
+    void mockError() => mockRequest().thenThrow(Exception());
 
     setUp(() {
       mockResponse(200);
@@ -126,6 +128,14 @@ void main() {
 
     test("Should return ServerError if post returns 500", () async {
       mockResponse(500);
+
+      final future = sut.request(url: url, method: "post");
+
+      expect(future, throwsA(HttpError.serverError));
+    });
+
+    test("Should return ServerError if post throws", () async {
+      mockError();
 
       final future = sut.request(url: url, method: "post");
 
