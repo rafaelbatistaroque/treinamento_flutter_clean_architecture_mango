@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../../ui/components/components.dart';
+import '../../ui/themes/themes.dart';
+
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -8,20 +11,33 @@ class LoginPage extends StatelessWidget {
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Container(
-              child: Image(image: AssetImage("./lib/ui/assets/logo.png")),
+            LoginHeader(),
+            Text(
+              "Login".toUpperCase(),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline1,
             ),
-            Text("Login".toUpperCase()),
-            Form(
+            Padding(
+              padding: const EdgeInsets.all(32),
+              child: Form(
                 child: Column(
-              children: [
-                TextFormField(decoration: InputDecoration(labelText: "E-mail", icon: Icon(Icons.email)), keyboardType: TextInputType.emailAddress),
-                TextFormField(decoration: InputDecoration(labelText: "Senha", icon: Icon(Icons.lock)), obscureText: true),
-                ElevatedButton(onPressed: () {}, child: Text("Entrar".toUpperCase())),
-                TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
-              ],
-            ))
+                  children: [
+                    TextFormField(
+                        decoration: InputDecoration(labelText: "E-mail", icon: Icon(Icons.email, color: AppColor.primaryColorLight)),
+                        keyboardType: TextInputType.emailAddress),
+                    SizedBox(height: 20),
+                    TextFormField(
+                        decoration: InputDecoration(labelText: "Senha", icon: Icon(Icons.lock, color: AppColor.primaryColorLight)),
+                        obscureText: true),
+                    SizedBox(height: 30),
+                    RaisedButton(onPressed: () {}, child: Text("Entrar".toUpperCase())),
+                    FlatButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
+                  ],
+                ),
+              ),
+            )
           ],
         ),
       ),
