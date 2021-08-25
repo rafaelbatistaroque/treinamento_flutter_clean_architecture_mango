@@ -1,7 +1,7 @@
 import 'dart:convert';
-
-import '../../business/contract/http_client.dart';
 import 'package:http/http.dart';
+import '../../business/helpers/helpers.dart';
+import '../../business/contract/http_client.dart';
 
 class HttpAdapter implements HttpClient {
   final Client client;
@@ -17,7 +17,11 @@ class HttpAdapter implements HttpClient {
   }
 
   Map? _handleResponse(Response response) {
-    if (response.statusCode == 200) return response.body.isEmpty ? null : jsonDecode(response.body);
-    return null;
+    if (response.statusCode == 200)
+      return response.body.isEmpty ? null : jsonDecode(response.body);
+    else if (response.statusCode == 204)
+      return null;
+    else
+      throw HttpError.badRequest;
   }
 }
