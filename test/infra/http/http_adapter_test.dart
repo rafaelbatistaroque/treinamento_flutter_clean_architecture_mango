@@ -19,7 +19,13 @@ void main() {
     url = faker.internet.httpUrl();
     registerFallbackValue(Uri());
   });
+  group("shared", () {
+    test("Should throw serverError if invalid method provider", () async {
+      final future = sut.request(url: url, method: "invalid_method");
 
+      expect(future, throwsA(HttpError.serverError));
+    });
+  });
   group("post", () {
     mockRequest() => when(() => client.post(any(), headers: any(named: "headers"), body: any(named: "body")));
     void mockResponse(int statusCode, {String body = '{"any_key": "any_value"}'}) {
