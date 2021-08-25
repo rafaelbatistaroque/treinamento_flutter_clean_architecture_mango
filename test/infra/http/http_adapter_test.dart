@@ -36,10 +36,17 @@ void main() {
   });
 
   group("post", () {
+    mockRequest() => when(() => client.post(any(), headers: any(named: "headers"), body: any(named: "body")));
+    void mockResponse(int statusCode, {String body = '{"any_key": "any_value"}'}) {
+      mockRequest().thenAnswer((_) async => Response(body, statusCode));
+    }
+
+    setUp(() {
+      mockResponse(200);
+    });
+
     test("Should call post with correct values", () async {
       final body = {"any_key": "any_value"};
-      when(() => client.post(any(), headers: any(named: "headers"), body: any(named: "body")))
-          .thenAnswer((_) async => Response('{"any_key": "any_value"}', 200));
 
       await sut.request(url: url, method: "post", body: body);
 
@@ -51,23 +58,19 @@ void main() {
     });
 
     test("Should call post without body", () async {
-      when(() => client.post(any(), headers: any(named: "headers"))).thenAnswer((_) async => Response('{"any_key": "any_value"}', 200));
-
       await sut.request(url: url, method: "post");
 
       verify(() => client.post(any(), headers: any(named: "headers"))).called(1);
     });
 
     test("Should return data if post returns 200", () async {
-      when(() => client.post(any(), headers: any(named: "headers"))).thenAnswer((_) async => Response('{"any_key": "any_value"}', 200));
-
       final response = await sut.request(url: url, method: "post");
 
       expect(response, {"any_key": "any_value"});
     });
 
     test("Should return null if post returns 200 with no data", () async {
-      when(() => client.post(any(), headers: any(named: "headers"))).thenAnswer((_) async => Response("", 200));
+      mockResponse(200, body: '');
 
       final response = await sut.request(url: url, method: "post");
 
