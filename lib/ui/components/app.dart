@@ -26,14 +26,19 @@ class App extends StatelessWidget {
           ),
           alignLabelWithHint: true,
         ),
-        buttonTheme: ButtonThemeData(
-          colorScheme: ColorScheme.light(primary: AppColor.primaryColor),
-          buttonColor: AppColor.primaryColor,
-          splashColor: AppColor.primaryColorLight,
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-          textTheme: ButtonTextTheme.primary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            primary: AppColor.primaryColor,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: AppColor.primaryColor,
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           ),
         ),
       ),

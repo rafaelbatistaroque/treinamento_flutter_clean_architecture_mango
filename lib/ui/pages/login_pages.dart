@@ -32,8 +32,8 @@ class LoginPage extends StatelessWidget {
                         decoration: InputDecoration(labelText: "Senha", icon: Icon(Icons.lock, color: AppColor.primaryColorLight)),
                         obscureText: true),
                     SizedBox(height: 30),
-                    RaisedButton(onPressed: () {}, child: Text("Entrar".toUpperCase())),
-                    FlatButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
+                    ElevatedButton(onPressed: () {}, child: Text("Entrar".toUpperCase())),
+                    TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
                   ],
                 ),
               ),
