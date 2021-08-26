@@ -49,7 +49,7 @@ class LoginPage extends StatelessWidget {
                             decoration: InputDecoration(
                               labelText: "Senha",
                               icon: Icon(Icons.lock, color: AppColor.primaryColorLight),
-                              errorText: snapshot.data,
+                              errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
                             ),
                           );
                         }),
