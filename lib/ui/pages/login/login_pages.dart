@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../../components/components.dart';
 import '../../themes/themes.dart';
@@ -15,7 +16,7 @@ class LoginPage extends StatelessWidget {
       body: Builder(
         builder: (context) {
           presenter!.isLoadingStream.listen((isLoading) {
-            if (isLoading)
+            if (isLoading) {
               showDialog(
                   context: context,
                   barrierDismissible: false,
@@ -36,6 +37,9 @@ class LoginPage extends StatelessWidget {
                           )
                         ],
                       ));
+            } else {
+              if (Navigator.canPop(context)) Navigator.of(context).pop();
+            }
           });
 
           return SingleChildScrollView(
