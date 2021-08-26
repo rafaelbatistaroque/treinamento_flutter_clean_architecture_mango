@@ -57,7 +57,10 @@ class LoginPage extends StatelessWidget {
                     StreamBuilder<bool>(
                         stream: presenter!.isFormValidStream,
                         builder: (context, snapshot) {
-                          return ElevatedButton(onPressed: snapshot.data == true ? () {} : null, child: Text("Entrar".toUpperCase()));
+                          return ElevatedButton(
+                            onPressed: snapshot.data == true ? presenter!.auth : null,
+                            child: Text("Entrar".toUpperCase()),
+                          );
                         }),
                     TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
                   ],

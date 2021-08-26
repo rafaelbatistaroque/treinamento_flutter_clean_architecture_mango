@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:faker/faker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -139,5 +138,16 @@ main() {
 
     final buttonEntrar = tester.widget<ElevatedButton>(find.byType(ElevatedButton));
     expect(buttonEntrar.onPressed, isNull);
+  });
+
+  testWidgets("Should call authentication on form submit", (WidgetTester tester) async {
+    await loadPage(tester);
+
+    isFormValidController.add(true);
+    await tester.pump();
+    tester.widget<ElevatedButton>(find.byType(ElevatedButton)).onPressed!();
+    await tester.pump();
+
+    verify(() => presenter.auth()).called(1);
   });
 }
