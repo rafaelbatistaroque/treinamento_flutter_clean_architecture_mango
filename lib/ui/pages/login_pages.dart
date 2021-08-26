@@ -25,14 +25,17 @@ class LoginPage extends StatelessWidget {
                 child: Column(
                   children: [
                     TextFormField(
-                        decoration: InputDecoration(labelText: "E-mail", icon: Icon(Icons.email, color: AppColor.primaryColorLight)),
+                        decoration: InputDecoration(
+                          labelText: "E-mail",
+                          icon: Icon(Icons.email, color: AppColor.primaryColorLight),
+                        ),
                         keyboardType: TextInputType.emailAddress),
                     SizedBox(height: 20),
                     TextFormField(
                         decoration: InputDecoration(labelText: "Senha", icon: Icon(Icons.lock, color: AppColor.primaryColorLight)),
                         obscureText: true),
                     SizedBox(height: 30),
-                    ElevatedButton(onPressed: () {}, child: Text("Entrar".toUpperCase())),
+                    ElevatedButton(onPressed: null, child: Text("Entrar".toUpperCase())),
                     TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
                   ],
                 ),
