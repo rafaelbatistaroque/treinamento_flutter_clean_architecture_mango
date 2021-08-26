@@ -34,15 +34,7 @@ class _LoginPageState extends State<LoginPage> {
           });
 
           widget.presenter!.mainErrorStream.listen((error) {
-            if (error.isEmpty == false) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                backgroundColor: Colors.red[900],
-                content: Text(
-                  error,
-                  textAlign: TextAlign.center,
-                ),
-              ));
-            }
+            if (error.isEmpty == false) showErrorMessage(context, error);
           });
 
           return SingleChildScrollView(
