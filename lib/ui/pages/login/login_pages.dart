@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
 import '../../themes/themes.dart';
+import 'components/components.dart';
 import 'login_presenter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -49,46 +51,38 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.all(32),
-                  child: Form(
-                    child: Column(
-                      children: [
-                        StreamBuilder<String>(
-                            stream: widget.presenter!.emailErrorStream,
-                            builder: (context, snapshot) {
-                              return TextFormField(
-                                  onChanged: widget.presenter!.validateEmail,
-                                  keyboardType: TextInputType.emailAddress,
+                  child: Provider<LoginPresenter>(
+                    create: (_) => widget.presenter!,
+                    child: Form(
+                      child: Column(
+                        children: [
+                          EmailInput(),
+                          SizedBox(height: 20),
+                          StreamBuilder<String>(
+                              stream: widget.presenter!.passwordErrorStream,
+                              builder: (context, snapshot) {
+                                return TextFormField(
+                                  onChanged: widget.presenter!.validatePassword,
+                                  obscureText: true,
                                   decoration: InputDecoration(
-                                    labelText: "E-mail",
-                                    icon: Icon(Icons.email, color: AppColor.primaryColorLight),
+                                    labelText: "Senha",
+                                    icon: Icon(Icons.lock, color: AppColor.primaryColorLight),
                                     errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
-                                  ));
-                            }),
-                        SizedBox(height: 20),
-                        StreamBuilder<String>(
-                            stream: widget.presenter!.passwordErrorStream,
-                            builder: (context, snapshot) {
-                              return TextFormField(
-                                onChanged: widget.presenter!.validatePassword,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  labelText: "Senha",
-                                  icon: Icon(Icons.lock, color: AppColor.primaryColorLight),
-                                  errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
-                                ),
-                              );
-                            }),
-                        SizedBox(height: 30),
-                        StreamBuilder<bool>(
-                            stream: widget.presenter!.isFormValidStream,
-                            builder: (context, snapshot) {
-                              return ElevatedButton(
-                                onPressed: snapshot.data == true ? widget.presenter!.auth : null,
-                                child: Text("Entrar".toUpperCase()),
-                              );
-                            }),
-                        TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
-                      ],
+                                  ),
+                                );
+                              }),
+                          SizedBox(height: 30),
+                          StreamBuilder<bool>(
+                              stream: widget.presenter!.isFormValidStream,
+                              builder: (context, snapshot) {
+                                return ElevatedButton(
+                                  onPressed: snapshot.data == true ? widget.presenter!.auth : null,
+                                  child: Text("Entrar".toUpperCase()),
+                                );
+                              }),
+                          TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
+                        ],
+                      ),
                     ),
                   ),
                 )
