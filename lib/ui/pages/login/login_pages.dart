@@ -59,14 +59,7 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(height: 20),
                           PasswordInput(),
                           SizedBox(height: 30),
-                          StreamBuilder<bool>(
-                              stream: widget.presenter!.isFormValidStream,
-                              builder: (context, snapshot) {
-                                return ElevatedButton(
-                                  onPressed: snapshot.data == true ? widget.presenter!.auth : null,
-                                  child: Text("Entrar".toUpperCase()),
-                                );
-                              }),
+                          LoginButton(),
                           TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
                         ],
                       ),
