@@ -3,7 +3,6 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
 import '../../components/components.dart';
-import '../../themes/themes.dart';
 import 'components/components.dart';
 import 'login_presenter.dart';
 
@@ -58,19 +57,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: [
                           EmailInput(),
                           SizedBox(height: 20),
-                          StreamBuilder<String>(
-                              stream: widget.presenter!.passwordErrorStream,
-                              builder: (context, snapshot) {
-                                return TextFormField(
-                                  onChanged: widget.presenter!.validatePassword,
-                                  obscureText: true,
-                                  decoration: InputDecoration(
-                                    labelText: "Senha",
-                                    icon: Icon(Icons.lock, color: AppColor.primaryColorLight),
-                                    errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
-                                  ),
-                                );
-                              }),
+                          PasswordInput(),
                           SizedBox(height: 30),
                           StreamBuilder<bool>(
                               stream: widget.presenter!.isFormValidStream,
