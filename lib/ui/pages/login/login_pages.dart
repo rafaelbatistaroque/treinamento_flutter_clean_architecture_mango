@@ -36,7 +36,7 @@ class LoginPage extends StatelessWidget {
                               decoration: InputDecoration(
                                 labelText: "E-mail",
                                 icon: Icon(Icons.email, color: AppColor.primaryColorLight),
-                                errorText: snapshot.data,
+                                errorText: snapshot.data?.isEmpty == true ? null : snapshot.data,
                               ));
                         }),
                     SizedBox(height: 20),
