@@ -2,25 +2,31 @@ import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+import '../../../lib/domain/usecases/usecases.dart';
 import '../../../lib/presentation/presenters/presenters.dart';
 import '../../../lib/presentation/contracts/contracts.dart';
 
 class ValidationSpy extends Mock implements Validation {}
 
+class AuthenticationSpy extends Mock implements Authentication {}
+
 void main() {
   late ValidationSpy validation;
+  late AuthenticationSpy authentication;
   late StreamLoginPresenter sut;
   late String email;
   late String password;
 
   mockValidationCall(String? field) => when(() => validation.validate(field: field ?? any(named: "field"), value: any(named: "value")));
+  When mockAuthentication(AuthenticationParams params) => when(() => authentication.auth(params));
   void mockValidation({String? field, String value = ""}) {
     mockValidationCall(field).thenReturn(value);
   }
 
   setUp(() {
     validation = ValidationSpy();
-    sut = StreamLoginPresenter(validation: validation);
+    authentication = AuthenticationSpy();
+    sut = StreamLoginPresenter(validation: validation, authentication: authentication);
     email = faker.internet.email();
     password = faker.internet.password();
     mockValidation();
@@ -94,5 +100,15 @@ void main() {
     sut.validateEmail(email);
     await Future.delayed(Duration.zero);
     sut.validatePassword(password);
+  });
+
+  test("Should call Authentication with correct values", () async {
+    mockAuthentication(AuthenticationParams(email: email, secret: password)).thenAnswer((_) => null);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    await sut.auth();
+
+    verify(() => authentication.auth(AuthenticationParams(email: email, secret: password))).called(1);
   });
 }
