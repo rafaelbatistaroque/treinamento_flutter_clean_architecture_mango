@@ -143,7 +143,7 @@ void main() {
     await sut.auth();
   });
 
-  test("Should emit correct events on InvalidCredentialsError", () async {
+  test("Should emit correct events on UnexpectedError", () async {
     mockAuthenticationError(DomainError.unexpected);
     sut.validateEmail(email);
     sut.validatePassword(password);
@@ -152,5 +152,12 @@ void main() {
     sut.mainErrorStream.listen(expectAsync1((erro) => expect(erro, "Algo de  errado aconteceu. Tente novamente em breve.")));
 
     await sut.auth();
+  });
+
+  test("Should not emit after dispose", () async {
+    expectLater(sut.emailErrorStream, neverEmits(isEmpty));
+
+    sut.dispose();
+    sut.validateEmail(email);
   });
 }

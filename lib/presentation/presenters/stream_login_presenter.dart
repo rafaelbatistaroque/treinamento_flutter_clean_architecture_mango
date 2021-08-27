@@ -30,7 +30,10 @@ class StreamLoginPresenter {
 
   StreamLoginPresenter({required this.validation, required this.authentication});
 
-  void _update() => _controller.add(_state);
+  void _update() {
+    if (_controller.isClosed) return;
+    _controller.add(_state);
+  }
 
   void validateEmail(String email) {
     _state.emailError = validation.validate(field: "email", value: email);
@@ -55,5 +58,9 @@ class StreamLoginPresenter {
       _state.isLoading = false;
       _update();
     }
+  }
+
+  void dispose() {
+    _controller.close();
   }
 }
