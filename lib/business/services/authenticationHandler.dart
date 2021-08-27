@@ -2,7 +2,7 @@ import '../../domain/entities/entities.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/authentication.dart';
 import '../models/account_model.dart';
-import '../contract/contract.dart';
+import '../contracts/contracts.dart';
 import '../helpers/helpers.dart';
 
 class AuthenticationHandler implements Authentication {

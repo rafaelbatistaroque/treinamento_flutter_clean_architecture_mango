@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import '../../business/helpers/helpers.dart';
-import '../../business/contract/http_client.dart';
+import '../../business/contracts/http_client.dart';
 
 class HttpAdapter implements HttpClient {
   final Client client;

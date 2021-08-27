@@ -2,11 +2,11 @@ import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
-import 'package:enquetes_flutter_mango/business/helpers/helpers.dart';
-import 'package:enquetes_flutter_mango/domain/helpers/helpers.dart';
-import 'package:enquetes_flutter_mango/domain/usecases/usecases.dart';
-import 'package:enquetes_flutter_mango/business/contract/contract.dart';
-import 'package:enquetes_flutter_mango/business/services/services.dart';
+import '../../../lib/business/helpers/helpers.dart';
+import '../../../lib/domain/helpers/helpers.dart';
+import '../../../lib/domain/usecases/usecases.dart';
+import '../../../lib/business/contracts/contracts.dart';
+import '../../../lib/business/services/services.dart';
 
 class HttpClientSpy extends Mock implements HttpClient {}
 
