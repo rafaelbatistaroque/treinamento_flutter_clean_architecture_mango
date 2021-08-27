@@ -2,6 +2,7 @@ import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
+import '../../../lib/domain/entities/entities.dart';
 import '../../../lib/domain/usecases/usecases.dart';
 import '../../../lib/presentation/presenters/presenters.dart';
 import '../../../lib/presentation/contracts/contracts.dart';
@@ -18,7 +19,11 @@ void main() {
   late String password;
 
   mockValidationCall(String? field) => when(() => validation.validate(field: field ?? any(named: "field"), value: any(named: "value")));
-  When mockAuthentication(AuthenticationParams params) => when(() => authentication.auth(params));
+  mockAuthenticationCall() => when(() => authentication.auth(any()));
+  void mockAuthentication() {
+    mockAuthenticationCall().thenAnswer((_) async => AccountEntity(faker.guid.guid()));
+  }
+
   void mockValidation({String? field, String value = ""}) {
     mockValidationCall(field).thenReturn(value);
   }
@@ -29,7 +34,9 @@ void main() {
     sut = StreamLoginPresenter(validation: validation, authentication: authentication);
     email = faker.internet.email();
     password = faker.internet.password();
+    registerFallbackValue(AuthenticationParams(email: email, secret: password));
     mockValidation();
+    mockAuthentication();
   });
 
   test("Should call Validation with correct email", () {
@@ -103,12 +110,20 @@ void main() {
   });
 
   test("Should call Authentication with correct values", () async {
-    mockAuthentication(AuthenticationParams(email: email, secret: password)).thenAnswer((_) => null);
     sut.validateEmail(email);
     sut.validatePassword(password);
 
     await sut.auth();
 
     verify(() => authentication.auth(AuthenticationParams(email: email, secret: password))).called(1);
+  });
+
+  test("Should emit correct events on Authentication success", () async {
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emitsInOrder([true, false]));
+
+    await sut.auth();
   });
 }
