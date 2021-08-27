@@ -15,17 +15,18 @@ class RequiredFieldValidation implements FieldValidation {
 }
 
 void main() {
-  test('Shold return null if value is not empty', () {
-    final sut = RequiredFieldValidation("any_field");
+  late RequiredFieldValidation sut;
 
+  setUp(() {
+    sut = RequiredFieldValidation("any_field");
+  });
+  test('Shold return null if value is not empty', () {
     var error = sut.validate("any_value");
 
     expect(error, null);
   });
 
   test('Shold return error if value is empty', () {
-    final sut = RequiredFieldValidation("any_field");
-
     var error = sut.validate("");
 
     expect(error, "Campo Obrigatório");
