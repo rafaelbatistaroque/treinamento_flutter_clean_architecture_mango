@@ -138,7 +138,18 @@ void main() {
     sut.validatePassword(password);
 
     expectLater(sut.isLoadingStream, emits(false));
-    sut.mainErrorStream.listen(expectAsync1((erro) => expect(erro, "Credenciais Inválidas")));
+    sut.mainErrorStream.listen(expectAsync1((erro) => expect(erro, "Credenciais Inválidas.")));
+
+    await sut.auth();
+  });
+
+  test("Should emit correct events on InvalidCredentialsError", () async {
+    mockAuthenticationError(DomainError.unexpected);
+    sut.validateEmail(email);
+    sut.validatePassword(password);
+
+    expectLater(sut.isLoadingStream, emits(false));
+    sut.mainErrorStream.listen(expectAsync1((erro) => expect(erro, "Algo de  errado aconteceu. Tente novamente em breve.")));
 
     await sut.auth();
   });
