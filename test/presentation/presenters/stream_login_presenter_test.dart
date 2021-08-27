@@ -70,8 +70,8 @@ void main() {
     sut.passwordErrorStream.listen(expectAsync1((erro) => expect(erro, isEmpty)));
     sut.isFormValidStream.listen(expectAsync1((isValid) => expect(isValid, false)));
 
-    sut.validatePassword(email);
-    sut.validatePassword(email);
+    sut.validatePassword(password);
+    sut.validatePassword(password);
   });
 
   test("Should emit form invalid if any filed invalid", () {
@@ -82,6 +82,17 @@ void main() {
     sut.isFormValidStream.listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validateEmail(email);
-    sut.validatePassword(email);
+    sut.validatePassword(password);
+  });
+
+  test("Should emit form valid if all fields valids", () async {
+    sut.emailErrorStream.listen(expectAsync1((erro) => expect(erro, isEmpty)));
+    sut.passwordErrorStream.listen(expectAsync1((erro) => expect(erro, isEmpty)));
+
+    expectLater(sut.isFormValidStream, emitsInOrder([false, true]));
+
+    sut.validateEmail(email);
+    await Future.delayed(Duration.zero);
+    sut.validatePassword(password);
   });
 }
