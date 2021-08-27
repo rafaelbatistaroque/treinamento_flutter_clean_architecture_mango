@@ -34,6 +34,15 @@ void main() {
     mockValidation(value: "error");
 
     sut.emailErrorStream.listen(expectAsync1((erro) => expect(erro, "error")));
+    sut.isFormValidStream.listen(expectAsync1((isValid) => expect(isValid, false)));
+
+    sut.validateEmail(email);
+    sut.validateEmail(email);
+  });
+
+  test("Should emit empty if validate succeeds", () {
+    sut.emailErrorStream.listen(expectAsync1((erro) => expect(erro, isEmpty)));
+    sut.isFormValidStream.listen(expectAsync1((isValid) => expect(isValid, false)));
 
     sut.validateEmail(email);
     sut.validateEmail(email);
