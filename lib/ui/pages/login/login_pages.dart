@@ -22,6 +22,11 @@ class _LoginPageState extends State<LoginPage> {
     widget.presenter!.dispose();
   }
 
+  void _hideKeyboard() {
+    final currentFocus = FocusScope.of(context);
+    if (currentFocus.hasPrimaryFocus == false) currentFocus.unfocus();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,35 +43,38 @@ class _LoginPageState extends State<LoginPage> {
             if (error.isNotEmpty) showErrorMessage(context, error);
           });
 
-          return SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                LoginHeader(),
-                Text(
-                  "Login".toUpperCase(),
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline1,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Provider<LoginPresenter>(
-                    create: (_) => widget.presenter!,
-                    child: Form(
-                      child: Column(
-                        children: [
-                          EmailInput(),
-                          SizedBox(height: 20),
-                          PasswordInput(),
-                          SizedBox(height: 30),
-                          LoginButton(),
-                          TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
-                        ],
+          return GestureDetector(
+            onTap: _hideKeyboard,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  LoginHeader(),
+                  Text(
+                    "Login".toUpperCase(),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline1,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(32),
+                    child: Provider<LoginPresenter>(
+                      create: (_) => widget.presenter!,
+                      child: Form(
+                        child: Column(
+                          children: [
+                            EmailInput(),
+                            SizedBox(height: 20),
+                            PasswordInput(),
+                            SizedBox(height: 30),
+                            LoginButton(),
+                            TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           );
         },
