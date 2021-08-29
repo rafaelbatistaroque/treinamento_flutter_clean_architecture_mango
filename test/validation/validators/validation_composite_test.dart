@@ -1,8 +1,8 @@
-import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
+import "package:mocktail/mocktail.dart";
+import "package:test/test.dart";
 
-import '../../../lib/validation/contracts/contracts.dart';
-import '../../../lib/presentation/contracts/contracts.dart';
+import "../../../lib/validation/contracts/contracts.dart";
+import "../../../lib/presentation/contracts/contracts.dart";
 
 class ValidationComposite implements Validation {
   final List<FieldValidation> validations;
@@ -11,7 +11,7 @@ class ValidationComposite implements Validation {
 
   String validate({required String field, required String value}) {
     late String error;
-    for (var validation in validations) {
+    for (var validation in validations.where((v) => v.field == field)) {
       error = validation.validate(value) ?? "";
       if (error.isNotEmpty) return error;
     }
@@ -39,24 +39,33 @@ void main() {
     validation1 = FieldValidationSpy();
     validation2 = FieldValidationSpy();
     sut = ValidationComposite([validation1, validation2]);
-    mockField(validation1, "any_field");
+    mockField(validation1, "other_field");
     mockValidation(validation1, null, null);
     mockField(validation2, "any_field");
     mockValidation(validation2, null, "");
   });
 
-  test('Should return null if all validations returns null or empty', () {
+  test("Should return null if all validations returns null or empty", () {
     final error = sut.validate(field: "any_field", value: "any_value");
 
     expect(error, "");
   });
 
-  test('Should return the first error', () {
+  test("Should return the first error", () {
     mockValidation(validation1, null, "erro_1");
     mockValidation(validation2, null, "erro_2");
 
     final error = sut.validate(field: "any_field", value: "any_value");
 
     expect(error, "erro_1");
+  });
+
+  test("Should return the first error of de field", () {
+    mockValidation(validation1, null, "erro_1");
+    mockValidation(validation2, null, "erro_2");
+
+    final error = sut.validate(field: "any_field", value: "any_value");
+
+    expect(error, "erro_2");
   });
 }
