@@ -4,8 +4,12 @@ import '../../../../infra/http/http.dart';
 import '../../../../main/factories/factories.dart';
 import '../../../../presentation/presenters/presenters.dart';
 
-StreamLoginPresenter makeLoginPresenter() {
+StreamLoginPresenter makeStreamLoginPresenter() {
   return StreamLoginPresenter(validation: makeLoginValidation(), authentication: _makeAuthenticationHandler());
+}
+
+GetXLoginPresenter makeGetXLoginPresenter() {
+  return GetXLoginPresenter(validation: makeLoginValidation(), authentication: _makeAuthenticationHandler());
 }
 
 AuthenticationHandler _makeAuthenticationHandler() {
