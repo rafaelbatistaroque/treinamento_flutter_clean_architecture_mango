@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import '../../ui/pages/pages.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 import '../contracts/contracts.dart';
@@ -15,7 +16,7 @@ class LoginState {
   bool get isFormValid => emailError.isEmpty && passwordError.isEmpty && email.isNotEmpty && password.isNotEmpty;
 }
 
-class StreamLoginPresenter {
+class StreamLoginPresenter implements LoginPresenter {
   final Validation validation;
   final Authentication authentication;
   final _controller = StreamController<LoginState>.broadcast();
