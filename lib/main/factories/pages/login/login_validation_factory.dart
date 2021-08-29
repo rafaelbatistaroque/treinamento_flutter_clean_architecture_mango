@@ -9,7 +9,7 @@ Validation makeLoginValidation() {
 
 List<FieldValidation> makeLoginValidations() {
   return [
-    ...ValidationBuilder.init().field("email").required().email().build(),
-    ...ValidationBuilder.init().field("password").required().build(),
+    ...ValidationBuilder.field("email").required().email().build(),
+    ...ValidationBuilder.field("password").required().build(),
   ];
 }

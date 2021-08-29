@@ -5,13 +5,10 @@ class ValidationBuilder {
   late String _fieldName;
   List<FieldValidation> _validations = [];
 
-  static ValidationBuilder init() {
-    return ValidationBuilder();
-  }
+  ValidationBuilder._(this._fieldName);
 
-  ValidationBuilder field(String fieldName) {
-    _fieldName = fieldName;
-    return this;
+  static ValidationBuilder field(String fieldName) {
+    return ValidationBuilder._(fieldName);
   }
 
   ValidationBuilder required() {
