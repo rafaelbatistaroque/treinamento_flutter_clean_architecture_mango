@@ -2,23 +2,7 @@ import "package:mocktail/mocktail.dart";
 import "package:test/test.dart";
 
 import "../../../lib/validation/contracts/contracts.dart";
-import "../../../lib/presentation/contracts/contracts.dart";
-
-class ValidationComposite implements Validation {
-  final List<FieldValidation> validations;
-
-  ValidationComposite(this.validations);
-
-  String validate({required String field, required String value}) {
-    late String error;
-    for (var validation in validations.where((v) => v.field == field)) {
-      error = validation.validate(value) ?? "";
-      if (error.isNotEmpty) return error;
-    }
-
-    return error;
-  }
-}
+import '../../../lib/validation/validators/validators.dart';
 
 class FieldValidationSpy extends Mock implements FieldValidation {}
 
@@ -55,7 +39,7 @@ void main() {
     mockValidation(validation1, null, "erro_1");
     mockValidation(validation2, null, "erro_2");
 
-    final error = sut.validate(field: "any_field", value: "any_value");
+    final error = sut.validate(field: "other_field", value: "any_value");
 
     expect(error, "erro_1");
   });
