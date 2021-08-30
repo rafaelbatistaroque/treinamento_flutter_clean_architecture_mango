@@ -7,7 +7,7 @@ import 'components/components.dart';
 import 'login_presenter.dart';
 
 class LoginPage extends StatefulWidget {
-  final LoginPresenter? presenter;
+  final LoginPresenter presenter;
 
   const LoginPage(this.presenter);
 
@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void dispose() {
     super.dispose();
-    widget.presenter!.dispose();
+    widget.presenter.dispose();
   }
 
   void _hideKeyboard() {
@@ -32,14 +32,14 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Builder(
         builder: (context) {
-          widget.presenter!.isLoadingStream.listen((isLoading) {
+          widget.presenter.isLoadingStream.listen((isLoading) {
             if (isLoading)
               showSpinnerDialog(context);
             else
               hideSpinnerDialog(context);
           });
 
-          widget.presenter!.mainErrorStream.listen((error) {
+          widget.presenter.mainErrorStream.listen((error) {
             if (error.isNotEmpty) showErrorMessage(context, error);
           });
 
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                   Padding(
                     padding: const EdgeInsets.all(32),
                     child: Provider<LoginPresenter>(
-                      create: (_) => widget.presenter!,
+                      create: (_) => widget.presenter,
                       child: Form(
                         child: Column(
                           children: [
