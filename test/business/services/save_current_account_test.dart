@@ -1,29 +1,11 @@
-import 'package:enquetes_flutter_mango/domain/entities/entities.dart';
-import 'package:enquetes_flutter_mango/domain/helpers/helpers.dart';
-import 'package:enquetes_flutter_mango/domain/usecases/usecases.dart';
 import 'package:faker/faker.dart';
-import 'package:get/get_connect/http/src/status/http_status.dart';
 import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
 import "package:test/test.dart";
-
-class LocalSaveCurrentAccount implements SavaCurrentAccount {
-  final SaveSecureCacheStorage saveSecureCacheStorage;
-
-  LocalSaveCurrentAccount({required this.saveSecureCacheStorage});
-
-  Future<void> save(AccountEntity account) async {
-    try {
-      await saveSecureCacheStorage.saveSecure(key: "token", value: account.token);
-    } catch (error) {
-      throw DomainError.unexpected;
-    }
-  }
-}
-
-abstract class SaveSecureCacheStorage {
-  Future<void> saveSecure({required String key, required String value});
-}
+import '../../../lib/business/contracts/contracts.dart';
+import '../../../lib/business/services/services.dart';
+import '../../../lib/domain/entities/entities.dart';
+import '../../../lib/domain/helpers/helpers.dart';
 
 class SaveSecureCacheStorageSpy extends Mock implements SaveSecureCacheStorage {}
 
@@ -34,7 +16,7 @@ void main() {
 
   When mockSaveSecure() => when(() => saveSecureCacheStorage.saveSecure(key: any(named: "key"), value: any(named: "value")));
   void mockSaveSecureSucess() {
-    mockSaveSecure().thenAnswer((_) async => Response("", HttpStatus.noContent));
+    mockSaveSecure().thenAnswer((_) async => Response("", 204));
   }
 
   void mockSaveSecureFail() {
