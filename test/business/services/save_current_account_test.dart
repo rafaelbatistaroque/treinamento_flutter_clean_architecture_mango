@@ -1,4 +1,5 @@
 import 'package:enquetes_flutter_mango/domain/entities/entities.dart';
+import 'package:enquetes_flutter_mango/domain/helpers/helpers.dart';
 import 'package:enquetes_flutter_mango/domain/usecases/usecases.dart';
 import 'package:faker/faker.dart';
 import 'package:get/get_connect/http/src/status/http_status.dart';
@@ -12,7 +13,11 @@ class LocalSaveCurrentAccount implements SavaCurrentAccount {
   LocalSaveCurrentAccount({required this.saveSecureCacheStorage});
 
   Future<void> save(AccountEntity account) async {
-    await saveSecureCacheStorage.saveSecure(key: "token", value: account.token);
+    try {
+      await saveSecureCacheStorage.saveSecure(key: "token", value: account.token);
+    } catch (error) {
+      throw DomainError.unexpected;
+    }
   }
 }
 
@@ -23,7 +28,7 @@ abstract class SaveSecureCacheStorage {
 class SaveSecureCacheStorageSpy extends Mock implements SaveSecureCacheStorage {}
 
 void main() {
-  test("Should call SaveChacheStorade with correct values", () async {
+  test("Should call SaveSecureCacheStorage with correct values", () async {
     final saveSecureCacheStorage = SaveSecureCacheStorageSpy();
     when(() => saveSecureCacheStorage.saveSecure(key: any(named: "key"), value: any(named: "value")))
         .thenAnswer((_) async => Response("", HttpStatus.noContent));
@@ -34,5 +39,17 @@ void main() {
     await sut.save(account);
 
     verify(() => saveSecureCacheStorage.saveSecure(key: "token", value: account.token));
+  });
+
+  test("Should throw UnespectedError if SaveSecureCacheStorage throws", () async {
+    final saveSecureCacheStorage = SaveSecureCacheStorageSpy();
+    when(() => saveSecureCacheStorage.saveSecure(key: any(named: "key"), value: any(named: "value"))).thenThrow(Exception());
+
+    final sut = LocalSaveCurrentAccount(saveSecureCacheStorage: saveSecureCacheStorage);
+    final account = AccountEntity(faker.guid.guid());
+
+    final future = sut.save(account);
+
+    expect(future, throwsA(DomainError.unexpected));
   });
 }
