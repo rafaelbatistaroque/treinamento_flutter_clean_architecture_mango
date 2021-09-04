@@ -1,5 +1,5 @@
 import '../entities/account_entity.dart';
 
-abstract class SavaCurrentAccount {
+abstract class SaveCurrentAccount {
   Future<void> save(AccountEntity account);
 }
