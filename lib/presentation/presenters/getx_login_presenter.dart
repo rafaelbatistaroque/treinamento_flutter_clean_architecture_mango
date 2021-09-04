@@ -44,15 +44,15 @@ class GetXLoginPresenter extends GetxController implements LoginPresenter {
   }
 
   Future<void> auth() async {
-    _isLoading.value = true;
     _validateForm();
     try {
+      _isLoading.value = true;
       final account = await authentication.auth(AuthenticationParams(email: _email, secret: _password));
       await saveCurrentAccount.save(account);
     } on DomainError catch (error) {
       _mainError.value = error.description;
-    } finally {
       _isLoading.value = false;
+    } finally {
       _validateForm();
     }
   }
