@@ -39,4 +39,12 @@ void main() {
 
     verify(() => secureStorage.write(key: key, value: value));
   });
+
+  test("Should throw save secure throws", () {
+    mockSecure().thenThrow(Exception());
+
+    final future = sut.saveSecure(key: key, value: value);
+
+    expect(future, throwsA(TypeMatcher<Exception>()));
+  });
 }
