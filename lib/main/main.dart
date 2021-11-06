@@ -24,7 +24,7 @@ class App extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
     return GetMaterialApp(
-      title: "Enquet Mango",
+      title: "Enquete Mango",
       debugShowCheckedModeBanner: false,
       theme: makeAppTheme(),
       initialRoute: "/login",
