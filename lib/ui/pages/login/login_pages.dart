@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/i18n/i18n.dart';
 import '../../components/components.dart';
 import './components/components.dart';
 import 'login_presenter.dart';
@@ -61,7 +62,7 @@ class LoginPage extends StatelessWidget {
                             PasswordInput(),
                             SizedBox(height: 30),
                             LoginButton(),
-                            TextButton.icon(onPressed: () {}, label: Text("Entrar".toUpperCase()), icon: Icon(Icons.person))
+                            TextButton.icon(onPressed: () {}, label: Text(R.strings.AddAccount.toUpperCase()), icon: Icon(Icons.person))
                           ],
                         ),
                       ),

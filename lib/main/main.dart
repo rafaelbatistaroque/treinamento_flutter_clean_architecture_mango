@@ -13,6 +13,7 @@ void main() {
     if (value is LoginPresenter) return;
     previous!<T>(value);
   };
+
   runApp(App());
 }
 
