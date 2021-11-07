@@ -13,7 +13,7 @@ void main() {
   late StreamController<String> navigateToController;
 
   When mockNavigate() => when(() => presenter.navigateToStream);
-  When mockLoadPage() => when(() => presenter.loadCurrentAccount());
+  When mockLoadPage() => when(() => presenter.checkAccount());
 
   setUp(() {
     presenter = SplashPresenterSpy();
@@ -45,7 +45,7 @@ void main() {
   testWidgets("Should call loadCurrentAccount on page load", (WidgetTester tester) async {
     await loadPage(tester);
 
-    verify(() => presenter.loadCurrentAccount()).called(1);
+    verify(() => presenter.checkAccount()).called(1);
   });
 
   testWidgets("Should change page", (WidgetTester tester) async {
