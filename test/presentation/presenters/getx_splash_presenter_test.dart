@@ -15,8 +15,12 @@ class GetXSplashPresenter implements SplashPresenter {
   Stream<String> get navigateToStream => _navigateTo.stream;
 
   Future<void> checkAccount() async {
-    var account = await loadCurrentAccount.load();
-    _navigateTo.value = account.token.isEmpty ? "/login" : "/surveys";
+    try {
+      var account = await loadCurrentAccount.load();
+      _navigateTo.value = account.token.isEmpty ? "/login" : "/surveys";
+    } catch (e) {
+      _navigateTo.value = "/login";
+    }
   }
 }
 
@@ -48,6 +52,14 @@ void main() {
 
   test("Should go to login page on null result", () async {
     mockLoadCurrentPage().thenAnswer((_) async => AccountEntity(""));
+
+    sut.navigateToStream.listen(expectAsync1((page) => expect(page, "/login")));
+
+    sut.checkAccount();
+  });
+
+  test("Should go to login page on error", () async {
+    mockLoadCurrentPage().thenThrow(Exception());
 
     sut.navigateToStream.listen(expectAsync1((page) => expect(page, "/login")));
 
